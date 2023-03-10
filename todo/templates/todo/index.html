@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+<h1>{% block title %}Todos{% endblock %}</h1>
+{% if  g.user%}
+    <a class="action" href="{{ url_for('todo.create') }}">Nuevo</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<ul>
+    {% for todo in todos %}
+        <li class="todo">
+            <div>
+                <h1>
+                    {% if todo['completed'] == 1 %} <!--Si el todo esta completado tendra el atributo de 1 de lo contrario tendra un 0-->
+                        <strike>{{ todo['description'] }}</strike> <!--Imprimimos el 'todo' tachado-->
+                    {% else %}
+                        {{ todo['description'] }} <!--Imprimimos el 'todo' no tachado-->
+                    {% endif %}
+                </h1>
+                <div class="about">{{ todo['created_at'].strftime('%Y-%m-%d') }}</div> <!--indicamos dia, mes y año de la fecha de creacion-->
+                <a class="action" href="{{ url_for('todo.update', id=todo['id']) }}">Edit</a> <!--Boton de recarga-->
+            </div>
+        </li>
+        <li>
+            {% if not loop.last %}
+                <hr>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

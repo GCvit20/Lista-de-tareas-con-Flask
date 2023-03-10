@@ -1,0 +1,57 @@
+<!--
+
+    Antes de empezar a trabajar instalar lo siguiente:
+
+    python -m venv venv (entorno virtual)
+    .\venv\Scripts\activate.ps1 (activamos el entorno)
+
+    pip install werkzeug
+    pip install mysql-connector-python
+    pip install Flask
+
+
+    app.config.from_mapping (nos permite definir variables de configuracion que despues vamos a poder utilizar en la app) (
+        SECRET_KEY='miKey', (Es una llave la cual se va a utilizar para poder definir la sesiones en nuestra app)
+        DATABASE_HOST=os.environ.get('FLASK_DATABASE_HOST'),
+        DATABASE_PASSWORD=os.environ.get('FLASK_DATABASE_PASSWORD'),
+        DATABASE_USER=os.environ.get('FLASK_DATABASE_USER'),
+        DATABASE=os.environ.get('FLASK_DATABASE'),
+    )
+
+    Esta funcion nos permite obtener la base de datos y tambien el cursor dentro de la app.
+    Se utilizan corchetes por que en este caso queremos acceder a una propiedad de la configuracion
+
+    def grt_db(): 
+    if 'db' not in g:
+        g.db = mysql.connector.connect(
+            host=current_app.config['DATABASE_HOST'],
+            user=current_app.config['DATABASE_USER'],
+            password=current_app.config['DATABASE_PASSWORD'],
+            database=current_app.config['DATABASE']
+        )
+        g.c=g.db.cursor(dictionary=True)
+    
+    return g.db, g.c 
+
+    Esta funcion nos permite cerrar la coneccion de la base de datos cada vez que nosotros realicemos una perticion.
+    Si db no se encuentra definido no es necesario cerrar la coneccion, de lo contrario la vamos a cerrar.
+
+    def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
+        
+    
+    Esta funcion sirve para indicarle a flask que debe ejecutar close_db al terminar una peticion
+
+    def init_app(app):
+        app.teardown_appcontext(close_db)
+
+
+    from werkzeug.security import check_password_hash (verifica si la contraseña que se ingresa es igual a otra), generate_password_hash (encripta la misma)
+    
+
+
+-->
